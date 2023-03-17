@@ -25,8 +25,8 @@ import {
   SiGraphql,
   SiPrisma,
 } from "react-icons/si";
-import Layout from "./components/common/Layout";
-import Button from "./components/molecules/Button";
+import Layout from "../components/common/Layout";
+import Button from "../components/molecules/Button";
 
 const Home: NextPage = () => {
   const { colorMode } = useColorMode();
