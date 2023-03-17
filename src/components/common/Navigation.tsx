@@ -2,6 +2,7 @@ import {
   Avatar,
   Box,
   Divider,
+  Flex,
   Highlight,
   HStack,
   IconButton,
@@ -13,7 +14,7 @@ import {
   Text,
   useColorMode,
 } from "@chakra-ui/react";
-// import { useSession } from "next-auth/react";
+import { useSession } from "next-auth/react";
 import Link from "next/link";
 import React from "react";
 import { AiFillGithub, AiFillInstagram, AiOutlinePlus } from "react-icons/ai";
@@ -23,7 +24,7 @@ import { IoIosToday } from "react-icons/io";
 
 const Navigation = () => {
   const { colorMode, toggleColorMode } = useColorMode();
-  // const { data: session } = useSession();
+  const { data: session } = useSession();
 
   return (
     <Stack
@@ -112,16 +113,18 @@ const Navigation = () => {
         <Box className="flex justify-center">
           <Switch colorScheme="teal" onChange={toggleColorMode} />
         </Box>
-        {/* {session && (
+        {session && (
           <Flex align="center" gap={2}>
             <Text>Add Post</Text>
-            <IconButton
-              aria-label="add-post"
-              icon={<AiOutlinePlus />}
-              size="sm"
-            />
+            <Link href="/post/create">
+              <IconButton
+                aria-label="add-post"
+                icon={<AiOutlinePlus />}
+                size="sm"
+              />
+            </Link>
           </Flex>
-        )} */}
+        )}
       </Stack>
     </Stack>
   );
