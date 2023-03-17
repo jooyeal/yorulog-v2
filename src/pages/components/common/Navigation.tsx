@@ -2,7 +2,6 @@ import {
   Avatar,
   Box,
   Divider,
-  Flex,
   Highlight,
   HStack,
   IconButton,
