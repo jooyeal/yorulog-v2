@@ -1,3 +1,4 @@
+import PostCard from "@/components/post/PostCard";
 import {
   Box,
   Card,
@@ -164,6 +165,23 @@ const Home: NextPage = () => {
           <Heading className="mt-20 border-l-4 border-teal-400 pl-6 ">
             Latest Blog Posts
           </Heading>
+          <Flex mt={6} wrap="wrap" gap={6}>
+            <PostCard
+              thumbnail="/avatar.jpeg"
+              title="About Remote Working"
+              content="Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient"
+            />
+            <PostCard
+              thumbnail="/avatar.jpeg"
+              title="About Remote Working"
+              content="Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient"
+            />
+            <PostCard
+              thumbnail="/avatar.jpeg"
+              title="About Remote Working"
+              content="Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient"
+            />
+          </Flex>
         </Box>
       </Layout>
     </>
