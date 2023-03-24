@@ -8,6 +8,7 @@ import { getSession } from "next-auth/react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { TCreatePost } from "@/types/post";
 import Button from "@/components/molecules/Button";
+import { trpc } from "@/utils/trpc";
 
 const MDEditor = dynamic(() => import("@uiw/react-md-editor"), { ssr: false });
 const MarkdownPreview = dynamic(() => import("@uiw/react-markdown-preview"), {

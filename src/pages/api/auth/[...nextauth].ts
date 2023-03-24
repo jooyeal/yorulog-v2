@@ -1,6 +1,6 @@
 import NextAuth, { DefaultSession, NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-import prisma from "../../../lib/db";
+import prisma from "../../../utils/db";
 
 declare module "next-auth" {
   interface Session extends DefaultSession {
