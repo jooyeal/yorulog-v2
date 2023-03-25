@@ -6,9 +6,9 @@ import { Box, FormLabel, Heading, Input, Stack } from "@chakra-ui/react";
 import { GetServerSideProps } from "next";
 import { getSession } from "next-auth/react";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { TCreatePost } from "@/types/post";
 import Button from "@/components/molecules/Button";
 import { trpc } from "@/utils/trpc";
+import { TPost } from "@/server/schemes/postScheme";
 
 const MDEditor = dynamic(() => import("@uiw/react-md-editor"), { ssr: false });
 const MarkdownPreview = dynamic(() => import("@uiw/react-markdown-preview"), {
@@ -16,10 +16,17 @@ const MarkdownPreview = dynamic(() => import("@uiw/react-markdown-preview"), {
 });
 
 const PostCreate = () => {
-  const { watch, setValue, handleSubmit, register } = useForm<TCreatePost>();
+  const { mutate } = trpc.post.create.useMutation();
+  const { watch, setValue, handleSubmit, register } = useForm<TPost>();
 
-  const onSubmit: SubmitHandler<TCreatePost> = (data) => {
-    console.log(data);
+  const onSubmit: SubmitHandler<TPost> = (data) => {
+    const { title, thumbnail, content } = data;
+
+    mutate({
+      title,
+      thumbnail: !thumbnail || thumbnail.length === 0 ? null : "",
+      content,
+    });
   };
 
   return (

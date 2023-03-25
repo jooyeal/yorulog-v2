@@ -15,3 +15,10 @@ model Account {
     email String @unique
     password String
 }
+
+model Post {
+  id String @id @default(cuid())
+  title String
+  thumbnail String?
+  content String
+}
