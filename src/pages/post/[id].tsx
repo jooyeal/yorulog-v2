@@ -17,6 +17,9 @@ import Image from "next/image";
 import dynamic from "next/dynamic";
 import { PrismaClient } from "@prisma/client";
 import { wait } from "@/utils/common";
+import { useSession } from "next-auth/react";
+import Link from "next/link";
+import Button from "@/components/molecules/Button";
 
 const MarkdownPreview = dynamic(() => import("@uiw/react-markdown-preview"), {
   ssr: false,
@@ -26,6 +29,7 @@ type Props = InferGetServerSidePropsType<typeof getStaticProps>;
 export default function PostDetail({ id }: Props) {
   const { data, isLoading } = trpc.post.getDetail.useQuery({ id });
   const [dispLoading, setDispLoading] = useState<boolean>(true);
+  const { data: session } = useSession();
   useEffect(() => {
     if (!isLoading) {
       (async () => {
@@ -68,6 +72,13 @@ export default function PostDetail({ id }: Props) {
               <MarkdownPreview className="p-2" source={data?.content} />
             </Skeleton>
           </Stack>
+          <Stack align="flex-end">
+            {session && (
+              <Link href={`/post/edit/${id}`}>
+                <Button>Edit post</Button>
+              </Link>
+            )}
+          </Stack>
         </Stack>
       </Box>
     </Layout>
@@ -94,7 +105,7 @@ export const getStaticProps = async (
     transformer: superjson,
   });
   const id = context.params?.id as string;
-  await ssg.post.getAll.prefetch();
+  await ssg.post.getDetail.prefetch({ id });
 
   return {
     props: {
