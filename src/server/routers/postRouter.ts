@@ -1,5 +1,5 @@
-import { postScheme } from "../schemes/postScheme";
-import { router, authenticatedProcedure } from "../trpc";
+import { getPostParams, postScheme } from "../schemes/postScheme";
+import { router, authenticatedProcedure, publicProcedure } from "../trpc";
 import { TRPCError } from "@trpc/server";
 
 export const postRouter = router({
@@ -9,9 +9,7 @@ export const postRouter = router({
       try {
         await ctx.prisma.post.create({
           data: {
-            title: input.title,
-            thumbnail: input.thumbnail,
-            content: input.content,
+            ...input,
           },
         });
       } catch (e) {
@@ -22,4 +20,35 @@ export const postRouter = router({
         });
       }
     }),
+  getDetail: publicProcedure
+    .input(getPostParams)
+    .query(async ({ input, ctx }) => {
+      try {
+        const post = await ctx.prisma.post.findUnique({
+          where: { id: input.id },
+        });
+        return post;
+      } catch (e) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "SERVER ERROR IS OCCURED!",
+        });
+      }
+    }),
+  getLatest: publicProcedure.query(async ({ input, ctx }) => {
+    try {
+      const latestPosts = await ctx.prisma.post.findMany({
+        orderBy: {
+          createdAt: "desc",
+        },
+        take: 5,
+      });
+      return latestPosts;
+    } catch (e) {
+      throw new TRPCError({
+        code: "INTERNAL_SERVER_ERROR",
+        message: "SERVER ERROR IS OCCURED!",
+      });
+    }
+  }),
 });

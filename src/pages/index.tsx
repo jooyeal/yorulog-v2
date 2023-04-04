@@ -1,4 +1,7 @@
 import PostCard from "@/components/post/PostCard";
+import { createContext } from "@/server/context";
+import { appRouter } from "@/server/routers/_app";
+import { trpc } from "@/utils/trpc";
 import {
   Box,
   Card,
@@ -11,7 +14,9 @@ import {
   Text,
   useColorMode,
 } from "@chakra-ui/react";
-import { type NextPage } from "next";
+import { createProxySSGHelpers } from "@trpc/react-query/ssg";
+import { GetStaticProps, type NextPage } from "next";
+import superjson from "superjson";
 import Head from "next/head";
 import Image from "next/image";
 import {
@@ -31,6 +36,7 @@ import Button from "../components/molecules/Button";
 
 const Home: NextPage = () => {
   const { colorMode } = useColorMode();
+  const { data } = trpc.post.getLatest.useQuery();
   return (
     <>
       <Head>
@@ -166,21 +172,14 @@ const Home: NextPage = () => {
             Latest Blog Posts
           </Heading>
           <Flex mt={6} wrap="wrap" gap={6}>
-            <PostCard
-              thumbnail="/avatar.jpeg"
-              title="About Remote Working"
-              content="Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient"
-            />
-            <PostCard
-              thumbnail="/avatar.jpeg"
-              title="About Remote Working"
-              content="Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient"
-            />
-            <PostCard
-              thumbnail="/avatar.jpeg"
-              title="About Remote Working"
-              content="Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient"
-            />
+            {data?.map((post) => (
+              <PostCard
+                key={post.id}
+                thumbnail={post.thumbnail}
+                title={post.title}
+                subTitle={post.subTitle}
+              />
+            ))}
           </Flex>
         </Box>
       </Layout>
@@ -189,3 +188,18 @@ const Home: NextPage = () => {
 };
 
 export default Home;
+
+export const getStaticProps: GetStaticProps = async () => {
+  const ssg = createProxySSGHelpers({
+    router: appRouter,
+    ctx: await createContext(),
+    transformer: superjson,
+  });
+  await ssg.post.getLatest.prefetch();
+
+  return {
+    props: {
+      trpcState: ssg.dehydrate(),
+    },
+  };
+};

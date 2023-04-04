@@ -19,6 +19,8 @@ model Account {
 model Post {
   id String @id @default(cuid())
   title String
+  subTitle String
   thumbnail String?
   content String
+  createdAt DateTime @default(now())
 }
