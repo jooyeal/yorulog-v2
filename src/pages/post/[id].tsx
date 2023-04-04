@@ -43,19 +43,19 @@ export default function PostDetail({ id }: Props) {
       <Box className="pt-16 pb-16 pl-36 pr-36 mobile:pt-4 mobile:pb-4 mobile:pl-4 mobile:pr-4">
         <Stack spacing="10">
           <Stack>
-            <Skeleton isLoaded={!dispLoading}>
-              <Heading>{data?.title}</Heading>
-            </Skeleton>
-            <Skeleton isLoaded={!dispLoading}>
-              <Text fontSize="xs" color="gray.300">
-                Published in{" "}
-                {Intl.DateTimeFormat("ja-JP", {
-                  year: "numeric",
-                  month: "2-digit",
-                  day: "2-digit",
-                }).format(data?.createdAt)}
-              </Text>
-            </Skeleton>
+            {/* <Skeleton isLoaded={!dispLoading}> */}
+            <Heading>{data?.title}</Heading>
+            {/* </Skeleton> */}
+            {/* <Skeleton isLoaded={!dispLoading}> */}
+            <Text fontSize="xs" color="gray.300">
+              Published in{" "}
+              {Intl.DateTimeFormat("ja-JP", {
+                year: "numeric",
+                month: "2-digit",
+                day: "2-digit",
+              }).format(data?.createdAt)}
+            </Text>
+            {/* </Skeleton> */}
           </Stack>
           {data?.thumbnail && (
             <Stack>
@@ -68,9 +68,9 @@ export default function PostDetail({ id }: Props) {
             </Stack>
           )}
           <Stack>
-            <Skeleton isLoaded={!dispLoading}>
-              <MarkdownPreview className="p-2" source={data?.content} />
-            </Skeleton>
+            {/* <Skeleton isLoaded={!dispLoading}> */}
+            <MarkdownPreview className="p-2" source={data?.content} />
+            {/* </Skeleton> */}
           </Stack>
           <Stack align="flex-end">
             {session && (
