@@ -12,7 +12,7 @@ import superjson from "superjson";
 import React from "react";
 import { trpc } from "@/utils/trpc";
 import Layout from "@/components/common/Layout";
-import { Box, Heading, Stack, Text } from "@chakra-ui/react";
+import { Box, Heading, Modal, Spinner, Stack, Text } from "@chakra-ui/react";
 import Image from "next/image";
 import dynamic from "next/dynamic";
 import { PrismaClient } from "@prisma/client";
@@ -23,9 +23,12 @@ const MarkdownPreview = dynamic(() => import("@uiw/react-markdown-preview"), {
 type Props = InferGetServerSidePropsType<typeof getStaticProps>;
 
 export default function PostDetail({ id }: Props) {
-  const { data } = trpc.post.getDetail.useQuery({ id });
+  const { data, isLoading } = trpc.post.getDetail.useQuery({ id });
   return (
     <Layout>
+      <Modal isOpen={isLoading} isCentered onClose={() => {}}>
+        <Spinner />
+      </Modal>
       <Box className="pt-16 pb-16 pl-36 pr-36 mobile:pt-4 mobile:pb-4 mobile:pl-4 mobile:pr-4">
         <Stack spacing="10">
           <Stack>
