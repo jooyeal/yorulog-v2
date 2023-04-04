@@ -1,7 +1,9 @@
 import "@uiw/react-md-editor/markdown-editor.css";
 import "@uiw/react-markdown-preview/markdown.css";
 import {
+  GetServerSidePropsContext,
   GetStaticPaths,
+  GetStaticProps,
   GetStaticPropsContext,
   InferGetServerSidePropsType,
 } from "next";
@@ -12,7 +14,7 @@ import superjson from "superjson";
 import React from "react";
 import { trpc } from "@/utils/trpc";
 import Layout from "@/components/common/Layout";
-import { Box, Heading, Modal, Spinner, Stack, Text } from "@chakra-ui/react";
+import { Box, Heading, Stack, Text } from "@chakra-ui/react";
 import Image from "next/image";
 import dynamic from "next/dynamic";
 import { PrismaClient } from "@prisma/client";
@@ -20,15 +22,12 @@ import { PrismaClient } from "@prisma/client";
 const MarkdownPreview = dynamic(() => import("@uiw/react-markdown-preview"), {
   ssr: false,
 });
-type Props = InferGetServerSidePropsType<typeof getStaticProps>;
+type Props = InferGetServerSidePropsType<typeof getServerSideProps>;
 
 export default function PostDetail({ id }: Props) {
-  const { data, isLoading } = trpc.post.getDetail.useQuery({ id });
+  const { data } = trpc.post.getDetail.useQuery({ id });
   return (
     <Layout>
-      <Modal isOpen={isLoading} isCentered onClose={() => {}}>
-        <Spinner />
-      </Modal>
       <Box className="pt-16 pb-16 pl-36 pr-36 mobile:pt-4 mobile:pb-4 mobile:pl-4 mobile:pr-4">
         <Stack spacing="10">
           <Stack>
@@ -61,19 +60,38 @@ export default function PostDetail({ id }: Props) {
   );
 }
 
-export const getStaticPaths: GetStaticPaths = async () => {
-  const prisma = new PrismaClient();
-  const posts = await prisma.post.findMany();
-  const paths = posts.map((post) => ({
-    params: {
-      id: post.id,
-    },
-  }));
-  return { paths, fallback: false };
-};
+// export const getStaticPaths: GetStaticPaths = async () => {
+//   const prisma = new PrismaClient();
+//   const posts = await prisma.post.findMany();
+//   const paths = posts.map((post) => ({
+//     params: {
+//       id: post.id,
+//     },
+//   }));
+//   return { paths, fallback: false };
+// };
 
-export const getStaticProps = async (
-  context: GetStaticPropsContext<{ id: string }>
+// export const getStaticProps = async (
+//   context: GetStaticPropsContext<{ id: string }>
+// ) => {
+//   const ssg = createProxySSGHelpers({
+//     router: appRouter,
+//     ctx: await createContext(),
+//     transformer: superjson,
+//   });
+//   const id = context.params?.id as string;
+//   await ssg.post.getAll.prefetch();
+
+//   return {
+//     props: {
+//       trpcState: ssg.dehydrate(),
+//       id,
+//     },
+//   };
+// };
+
+export const getServerSideProps = async (
+  context: GetServerSidePropsContext<{ id: string }>
 ) => {
   const ssg = createProxySSGHelpers({
     router: appRouter,
@@ -81,7 +99,7 @@ export const getStaticProps = async (
     transformer: superjson,
   });
   const id = context.params?.id as string;
-  await ssg.post.getAll.prefetch();
+  const posts = await ssg.post.getAll.prefetch();
 
   return {
     props: {
