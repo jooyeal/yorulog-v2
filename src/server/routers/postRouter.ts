@@ -41,7 +41,7 @@ export const postRouter = router({
         orderBy: {
           createdAt: "desc",
         },
-        take: 5,
+        take: 3,
       });
       return latestPosts;
     } catch (e) {

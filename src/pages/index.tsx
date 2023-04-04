@@ -171,7 +171,7 @@ const Home: NextPage = () => {
           <Heading className="mt-20 border-l-4 border-teal-400 pl-6 ">
             Latest Blog Posts
           </Heading>
-          <Flex mt={6} wrap="wrap" gap={6}>
+          <Flex mt={6} wrap="wrap" gap={6} justify="center">
             {data?.map((post) => (
               <PostCard
                 key={post.id}

@@ -23,14 +23,13 @@ import { FaUser } from "react-icons/fa";
 import { IoIosToday } from "react-icons/io";
 
 const Navigation = () => {
-  const { colorMode, toggleColorMode } = useColorMode();
   const { data: session } = useSession();
 
   return (
     <Stack
-      className={`items-center mobile:h-[calc(100vh_-_4rem)] mobile:w-screen  ${
-        colorMode === "dark" ? "mobile:bg-slate-800" : "mobile:bg-slate-50"
-      }`}
+      className={`items-center mobile:h-[calc(100vh_-_4rem)] mobile:w-screen 
+         "mobile:bg-slate-800"
+      `}
     >
       <Avatar src="/avatar.jpeg" size="2xl" />
       <Text className="break-all p-4">
@@ -69,37 +68,19 @@ const Navigation = () => {
       <Divider />
       <Stack>
         <List spacing={3}>
-          <ListItem
-            className={`${
-              colorMode === "dark"
-                ? "text-slate-300 hover:text-slate-50"
-                : "text-slate-500 hover:text-slate-900"
-            } `}
-          >
+          <ListItem className={`text-slate-300 hover:text-slate-50"`}>
             <Link href="#">
               <ListIcon as={FaUser} />
               <Text as="b">About me</Text>
             </Link>
           </ListItem>
-          <ListItem
-            className={`${
-              colorMode === "dark"
-                ? "text-slate-300 hover:text-slate-50"
-                : "text-slate-500 hover:text-slate-900"
-            } `}
-          >
+          <ListItem className={`text-slate-300 hover:text-slate-50`}>
             <Link href="#">
               <ListIcon as={IoIosToday} />
               <Text as="b">Daily life</Text>
             </Link>
           </ListItem>
-          <ListItem
-            className={`${
-              colorMode === "dark"
-                ? "text-slate-300 hover:text-slate-50"
-                : "text-slate-500 hover:text-slate-900"
-            } `}
-          >
+          <ListItem className={`text-slate-300 hover:text-slate-50`}>
             <Link href="#">
               <ListIcon as={BsLaptopFill} />
               <Text as="b">Development</Text>
@@ -109,10 +90,6 @@ const Navigation = () => {
       </Stack>
       <Divider />
       <Stack>
-        <Text className="font-bold">Color Mode</Text>
-        <Box className="flex justify-center">
-          <Switch colorScheme="teal" onChange={toggleColorMode} />
-        </Box>
         {session && (
           <Flex align="center" gap={2}>
             <Text>Add Post</Text>
