@@ -9,14 +9,13 @@ import { createProxySSGHelpers } from "@trpc/react-query/ssg";
 import { appRouter } from "@/server/routers/_app";
 import { createContext } from "@/server/context";
 import superjson from "superjson";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { trpc } from "@/utils/trpc";
 import Layout from "@/components/common/Layout";
-import { Box, Heading, Skeleton, Stack, Text } from "@chakra-ui/react";
+import { Box, Heading, Stack, Text } from "@chakra-ui/react";
 import Image from "next/image";
 import dynamic from "next/dynamic";
 import { PrismaClient } from "@prisma/client";
-import { wait } from "@/utils/common";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import Button from "@/components/molecules/Button";
@@ -27,26 +26,15 @@ const MarkdownPreview = dynamic(() => import("@uiw/react-markdown-preview"), {
 type Props = InferGetServerSidePropsType<typeof getStaticProps>;
 
 export default function PostDetail({ id }: Props) {
-  const { data, isLoading } = trpc.post.getDetail.useQuery({ id });
-  const [dispLoading, setDispLoading] = useState<boolean>(true);
+  const { data } = trpc.post.getDetail.useQuery({ id });
   const { data: session } = useSession();
-  useEffect(() => {
-    if (!isLoading) {
-      (async () => {
-        await wait(1000);
-        setDispLoading(false);
-      })();
-    }
-  }, [isLoading]);
+
   return (
     <Layout>
       <Box className="pt-16 pb-16 pl-36 pr-36 mobile:pt-4 mobile:pb-4 mobile:pl-4 mobile:pr-4">
         <Stack spacing="10">
           <Stack>
-            {/* <Skeleton isLoaded={!dispLoading}> */}
             <Heading>{data?.title}</Heading>
-            {/* </Skeleton> */}
-            {/* <Skeleton isLoaded={!dispLoading}> */}
             <Text fontSize="xs" color="gray.300">
               Published in{" "}
               {Intl.DateTimeFormat("ja-JP", {
@@ -55,7 +43,6 @@ export default function PostDetail({ id }: Props) {
                 day: "2-digit",
               }).format(data?.createdAt)}
             </Text>
-            {/* </Skeleton> */}
           </Stack>
           {data?.thumbnail && (
             <Stack>
@@ -68,9 +55,7 @@ export default function PostDetail({ id }: Props) {
             </Stack>
           )}
           <Stack>
-            {/* <Skeleton isLoaded={!dispLoading}> */}
             <MarkdownPreview className="p-2" source={data?.content} />
-            {/* </Skeleton> */}
           </Stack>
           <Stack align="flex-end">
             {session && (
