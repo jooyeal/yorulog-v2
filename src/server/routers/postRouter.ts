@@ -1,6 +1,7 @@
 import { getPostParams, postScheme } from "../schemes/postScheme";
 import { router, authenticatedProcedure, publicProcedure } from "../trpc";
 import { TRPCError } from "@trpc/server";
+import { z } from "zod";
 
 export const postRouter = router({
   create: authenticatedProcedure
@@ -10,6 +11,27 @@ export const postRouter = router({
         await ctx.prisma.post.create({
           data: {
             ...input,
+          },
+        });
+      } catch (e) {
+        console.error(e);
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "SERVER ERROR IS OCCURED!",
+        });
+      }
+    }),
+  update: authenticatedProcedure
+    .input(postScheme.and(z.object({ id: z.string() })))
+    .mutation(async ({ input, ctx }) => {
+      const { id, ...rest } = input;
+      try {
+        await ctx.prisma.post.update({
+          where: {
+            id,
+          },
+          data: {
+            ...rest,
           },
         });
       } catch (e) {
