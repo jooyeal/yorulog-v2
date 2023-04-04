@@ -1,9 +1,7 @@
 import "@uiw/react-md-editor/markdown-editor.css";
 import "@uiw/react-markdown-preview/markdown.css";
 import {
-  GetServerSidePropsContext,
   GetStaticPaths,
-  GetStaticProps,
   GetStaticPropsContext,
   InferGetServerSidePropsType,
 } from "next";
@@ -11,35 +9,49 @@ import { createProxySSGHelpers } from "@trpc/react-query/ssg";
 import { appRouter } from "@/server/routers/_app";
 import { createContext } from "@/server/context";
 import superjson from "superjson";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { trpc } from "@/utils/trpc";
 import Layout from "@/components/common/Layout";
-import { Box, Heading, Stack, Text } from "@chakra-ui/react";
+import { Box, Heading, Skeleton, Stack, Text } from "@chakra-ui/react";
 import Image from "next/image";
 import dynamic from "next/dynamic";
 import { PrismaClient } from "@prisma/client";
+import { wait } from "@/utils/common";
 
 const MarkdownPreview = dynamic(() => import("@uiw/react-markdown-preview"), {
   ssr: false,
 });
-type Props = InferGetServerSidePropsType<typeof getServerSideProps>;
+type Props = InferGetServerSidePropsType<typeof getStaticProps>;
 
 export default function PostDetail({ id }: Props) {
-  const { data } = trpc.post.getDetail.useQuery({ id });
+  const { data, isLoading } = trpc.post.getDetail.useQuery({ id });
+  const [dispLoading, setDispLoading] = useState<boolean>(true);
+  useEffect(() => {
+    if (!isLoading) {
+      (async () => {
+        await wait(1000);
+        setDispLoading(false);
+      })();
+    }
+  }, [isLoading]);
   return (
     <Layout>
       <Box className="pt-16 pb-16 pl-36 pr-36 mobile:pt-4 mobile:pb-4 mobile:pl-4 mobile:pr-4">
         <Stack spacing="10">
           <Stack>
-            <Heading>{data?.title}</Heading>
-            <Text fontSize="xs" color="gray.300">
-              Published in{" "}
-              {Intl.DateTimeFormat("ja-JP", {
-                year: "numeric",
-                month: "2-digit",
-                day: "2-digit",
-              }).format(data?.createdAt)}
-            </Text>
+            <Skeleton isLoaded={!dispLoading}>
+              <Heading>{data?.title}</Heading>
+            </Skeleton>
+            <Skeleton isLoaded={!dispLoading}>
+              <Text fontSize="xs" color="gray.300">
+                Published in{" "}
+                {Intl.DateTimeFormat("ja-JP", {
+                  year: "numeric",
+                  month: "2-digit",
+                  day: "2-digit",
+                }).format(data?.createdAt)}
+              </Text>
+            </Skeleton>
           </Stack>
           {data?.thumbnail && (
             <Stack>
@@ -52,7 +64,9 @@ export default function PostDetail({ id }: Props) {
             </Stack>
           )}
           <Stack>
-            <MarkdownPreview className="p-2" source={data?.content} />
+            <Skeleton isLoaded={!dispLoading}>
+              <MarkdownPreview className="p-2" source={data?.content} />
+            </Skeleton>
           </Stack>
         </Stack>
       </Box>
@@ -60,38 +74,19 @@ export default function PostDetail({ id }: Props) {
   );
 }
 
-// export const getStaticPaths: GetStaticPaths = async () => {
-//   const prisma = new PrismaClient();
-//   const posts = await prisma.post.findMany();
-//   const paths = posts.map((post) => ({
-//     params: {
-//       id: post.id,
-//     },
-//   }));
-//   return { paths, fallback: false };
-// };
+export const getStaticPaths: GetStaticPaths = async () => {
+  const prisma = new PrismaClient();
+  const posts = await prisma.post.findMany();
+  const paths = posts.map((post) => ({
+    params: {
+      id: post.id,
+    },
+  }));
+  return { paths, fallback: false };
+};
 
-// export const getStaticProps = async (
-//   context: GetStaticPropsContext<{ id: string }>
-// ) => {
-//   const ssg = createProxySSGHelpers({
-//     router: appRouter,
-//     ctx: await createContext(),
-//     transformer: superjson,
-//   });
-//   const id = context.params?.id as string;
-//   await ssg.post.getAll.prefetch();
-
-//   return {
-//     props: {
-//       trpcState: ssg.dehydrate(),
-//       id,
-//     },
-//   };
-// };
-
-export const getServerSideProps = async (
-  context: GetServerSidePropsContext<{ id: string }>
+export const getStaticProps = async (
+  context: GetStaticPropsContext<{ id: string }>
 ) => {
   const ssg = createProxySSGHelpers({
     router: appRouter,
@@ -99,7 +94,7 @@ export const getServerSideProps = async (
     transformer: superjson,
   });
   const id = context.params?.id as string;
-  const posts = await ssg.post.getAll.prefetch();
+  await ssg.post.getAll.prefetch();
 
   return {
     props: {
