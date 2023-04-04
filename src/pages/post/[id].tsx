@@ -10,7 +10,7 @@ type Props = InferGetServerSidePropsType<typeof getServerSideProps>;
 
 export default function PostDetail({ id }: Props) {
   const { data } = trpc.post.getDetail.useQuery({ id });
-  return <div>PostDetail</div>;
+  return <div>{data?.title}</div>;
 }
 
 export const getServerSideProps = async (

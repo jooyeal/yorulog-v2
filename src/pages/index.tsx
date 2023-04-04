@@ -175,6 +175,7 @@ const Home: NextPage = () => {
             {data?.map((post) => (
               <PostCard
                 key={post.id}
+                id={post.id}
                 thumbnail={post.thumbnail}
                 title={post.title}
                 subTitle={post.subTitle}
