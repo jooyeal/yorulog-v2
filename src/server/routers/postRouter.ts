@@ -51,4 +51,15 @@ export const postRouter = router({
       });
     }
   }),
+  getAll: publicProcedure.query(async ({ ctx }) => {
+    try {
+      const allPosts = await ctx.prisma.post.findMany();
+      return allPosts;
+    } catch (e) {
+      throw new TRPCError({
+        code: "INTERNAL_SERVER_ERROR",
+        message: "SERVER ERROR IS OCCURED!",
+      });
+    }
+  }),
 });

@@ -1,6 +1,5 @@
 import {
   Avatar,
-  Box,
   Divider,
   Flex,
   Highlight,
@@ -10,9 +9,7 @@ import {
   ListIcon,
   ListItem,
   Stack,
-  Switch,
   Text,
-  useColorMode,
 } from "@chakra-ui/react";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
@@ -69,19 +66,19 @@ const Navigation = () => {
       <Stack>
         <List spacing={3}>
           <ListItem className={`text-slate-300 hover:text-slate-50"`}>
-            <Link href="#">
+            <Link href="/">
               <ListIcon as={FaUser} />
               <Text as="b">About me</Text>
             </Link>
           </ListItem>
           <ListItem className={`text-slate-300 hover:text-slate-50`}>
-            <Link href="#">
+            <Link href="/post/daily">
               <ListIcon as={IoIosToday} />
               <Text as="b">Daily life</Text>
             </Link>
           </ListItem>
           <ListItem className={`text-slate-300 hover:text-slate-50`}>
-            <Link href="#">
+            <Link href="/post/dev">
               <ListIcon as={BsLaptopFill} />
               <Text as="b">Development</Text>
             </Link>
