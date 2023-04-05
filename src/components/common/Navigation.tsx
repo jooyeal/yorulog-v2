@@ -25,7 +25,7 @@ const Navigation = () => {
   return (
     <Stack
       className={`items-center mobile:h-[calc(100vh_-_4rem)] mobile:w-screen 
-         "mobile:bg-slate-800"
+         mobile:bg-slate-800
       `}
     >
       <Avatar src="/avatar.jpeg" size="2xl" />
