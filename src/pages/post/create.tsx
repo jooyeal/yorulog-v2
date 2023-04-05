@@ -17,6 +17,7 @@ import Button from "@/components/molecules/Button";
 import { trpc } from "@/utils/trpc";
 import { TPost } from "@/server/schemes/postScheme";
 import { useRouter } from "next/router";
+import axios from "axios";
 
 const MDEditor = dynamic(() => import("@uiw/react-md-editor"), { ssr: false });
 const MarkdownPreview = dynamic(() => import("@uiw/react-markdown-preview"), {
@@ -43,13 +44,32 @@ const PostCreate = () => {
   });
   const { watch, setValue, handleSubmit, register } = useForm<TPost>();
 
-  const onSubmit: SubmitHandler<TPost> = (data) => {
+  const onSubmit: SubmitHandler<TPost> = async (data) => {
     const { title, subTitle, thumbnail, content } = data;
-
+    let url = "/no-image.png";
+    if (thumbnail) {
+      const formData = new FormData();
+      formData.append("file", thumbnail[0]);
+      formData.append(
+        "upload_preset",
+        process.env.NEXT_PUBLIC_CLOUDINARY_PRESET || ""
+      );
+      formData.append(
+        "cloud_name",
+        process.env.NEXT_PUBLIC_CLOUDINARY_NAME || ""
+      );
+      const { data } = await axios.post(
+        `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_NAME}/image/upload`,
+        formData
+      );
+      if (data.url) {
+        url = data.url;
+      }
+    }
     mutate({
       title,
       subTitle,
-      thumbnail: !thumbnail || thumbnail.length === 0 ? null : "",
+      thumbnail: url,
       content,
     });
   };
