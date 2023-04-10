@@ -12,13 +12,14 @@ import superjson from "superjson";
 import React from "react";
 import { trpc } from "@/utils/trpc";
 import Layout from "@/components/common/Layout";
-import { Heading, Image, Stack, Text } from "@chakra-ui/react";
+import { Box, Heading, Image, Stack, Text } from "@chakra-ui/react";
 import dynamic from "next/dynamic";
 import { PrismaClient } from "@prisma/client";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import Button from "@/components/molecules/Button";
 import Padder from "@/components/common/Padder";
+import PostRow from "@/components/post/PostRow";
 
 const MarkdownPreview = dynamic(() => import("@uiw/react-markdown-preview"), {
   ssr: false,
@@ -27,6 +28,9 @@ type Props = InferGetServerSidePropsType<typeof getStaticProps>;
 
 export default function PostDetail({ id }: Props) {
   const { data } = trpc.post.getDetail.useQuery({ id });
+  const { data: relatedPosts } = trpc.post.getPostsByCategory.useQuery({
+    category: data?.category || "DEV",
+  });
   const { data: session } = useSession();
 
   return (
@@ -63,6 +67,14 @@ export default function PostDetail({ id }: Props) {
                 <Button>Edit post</Button>
               </Link>
             )}
+          </Stack>
+          <Stack>
+            <Heading mb="10">Related Posts</Heading>
+            <Box>
+              {relatedPosts?.map((post) => (
+                <PostRow key={post.id} {...post} />
+              ))}
+            </Box>
           </Stack>
         </Stack>
       </Padder>

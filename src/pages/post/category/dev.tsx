@@ -8,15 +8,21 @@ import superjson from "superjson";
 import React from "react";
 import { trpc } from "@/utils/trpc";
 import PostRow from "@/components/post/PostRow";
+import { Box, Heading, Stack } from "@chakra-ui/react";
 
 export default function CategoryDev() {
-  const { data } = trpc.post.getDev.useQuery();
+  const { data } = trpc.post.getPostsByCategory.useQuery({ category: "DEV" });
   return (
     <Layout>
       <Padder>
-        {data?.map((post) => (
-          <PostRow key={post.id} {...post} />
-        ))}
+        <Stack>
+          <Heading mb="10">My development stories</Heading>
+          <Box>
+            {data?.map((post) => (
+              <PostRow key={post.id} {...post} />
+            ))}
+          </Box>
+        </Stack>
       </Padder>
     </Layout>
   );
@@ -28,7 +34,7 @@ export const getStaticProps: GetStaticProps = async () => {
     ctx: await createContext(),
     transformer: superjson,
   });
-  await ssg.post.getDev.prefetch();
+  await ssg.post.getPostsByCategory.prefetch({ category: "DEV" });
 
   return {
     props: {
