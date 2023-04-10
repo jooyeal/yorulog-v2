@@ -84,4 +84,34 @@ export const postRouter = router({
       });
     }
   }),
+  getDev: publicProcedure.query(async ({ ctx }) => {
+    try {
+      const devPosts = await ctx.prisma.post.findMany({
+        where: {
+          category: "DEV",
+        },
+      });
+      return devPosts;
+    } catch (e) {
+      throw new TRPCError({
+        code: "INTERNAL_SERVER_ERROR",
+        message: "SERVER ERROR IS OCCURED!",
+      });
+    }
+  }),
+  getDaily: publicProcedure.query(async ({ ctx }) => {
+    try {
+      const dailyPosts = await ctx.prisma.post.findMany({
+        where: {
+          category: "DAILY",
+        },
+      });
+      return dailyPosts;
+    } catch (e) {
+      throw new TRPCError({
+        code: "INTERNAL_SERVER_ERROR",
+        message: "SERVER ERROR IS OCCURED!",
+      });
+    }
+  }),
 });

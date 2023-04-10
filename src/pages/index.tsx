@@ -71,7 +71,7 @@ const Home: NextPage = () => {
             focused on front-end but also including back-end as one of my areas
             of expertise
           </Text>
-          <Flex className="mt-10 flex-wrap gap-6">
+          <Flex className="mt-10 flex-wrap gap-6 justify-center">
             <Card className="w-96" variant="outline">
               <CardBody>
                 <HStack>
