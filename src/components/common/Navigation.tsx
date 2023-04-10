@@ -65,7 +65,7 @@ const Navigation = () => {
       <Divider />
       <Stack>
         <List spacing={3}>
-          <ListItem className={`text-slate-300 hover:text-slate-50"`}>
+          <ListItem className={`text-slate-300 hover:text-slate-50`}>
             <Link href="/">
               <ListIcon as={FaUser} />
               <Text as="b">About me</Text>
