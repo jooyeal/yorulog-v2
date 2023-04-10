@@ -10,6 +10,7 @@ import {
   FormLabel,
   Heading,
   Input,
+  Select,
   Stack,
   useToast,
 } from "@chakra-ui/react";
@@ -57,11 +58,12 @@ export default function PostEdit({ id }: Props) {
       subTitle: data?.subTitle,
       thumbnail: data?.thumbnail,
       content: data?.content,
+      category: data?.category,
     },
   });
 
   const onSubmit: SubmitHandler<TPost> = async (data) => {
-    const { title, subTitle, thumbnail, content } = data;
+    const { title, subTitle, thumbnail, content, category } = data;
     let url: string | null = null;
     if (thumbnail) {
       const formData = new FormData();
@@ -88,6 +90,7 @@ export default function PostEdit({ id }: Props) {
       subTitle,
       thumbnail: url ? url : thumbnail,
       content,
+      category,
     });
   };
 
@@ -104,6 +107,15 @@ export default function PostEdit({ id }: Props) {
             Sub Title
           </FormLabel>
           <Input {...register("subTitle")} placeholder="Sub Title" />
+        </Box>
+        <Box>
+          <FormLabel className="border-l pl-2 border-teal-500">
+            Category
+          </FormLabel>
+          <Select {...register("category")} placeholder="Category">
+            <option value="DEV">development</option>
+            <option value="DAILY">daily</option>
+          </Select>
         </Box>
         <Box>
           <FormLabel className="border-l pl-2 border-teal-500">

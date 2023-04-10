@@ -21,6 +21,12 @@ model Post {
   title String
   subTitle String
   thumbnail String?
+  category Cateogry
   content String
   createdAt DateTime @default(now())
+}
+
+enum Cateogry {
+  DEV
+  DAILY
 }

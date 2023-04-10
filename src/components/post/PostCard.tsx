@@ -26,6 +26,7 @@ const PostCard = ({ id, thumbnail, title, subTitle }: Props) => {
             src={thumbnail || "/no-image.png"}
             width={320}
             height={180}
+            objectFit="cover"
             alt="post-thumbnail"
           />
         </CardHeader>

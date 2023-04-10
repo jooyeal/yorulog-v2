@@ -72,13 +72,13 @@ const Navigation = () => {
             </Link>
           </ListItem>
           <ListItem className={`text-slate-300 hover:text-slate-50`}>
-            <Link href="/post/daily">
+            <Link href="/post/category/daily">
               <ListIcon as={IoIosToday} />
               <Text as="b">Daily life</Text>
             </Link>
           </ListItem>
           <ListItem className={`text-slate-300 hover:text-slate-50`}>
-            <Link href="/post/dev">
+            <Link href="/post/category/dev">
               <ListIcon as={BsLaptopFill} />
               <Text as="b">Development</Text>
             </Link>

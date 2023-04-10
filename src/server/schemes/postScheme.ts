@@ -5,6 +5,7 @@ export const postScheme = z.object({
   subTitle: z.string(),
   thumbnail: z.string().nullable(),
   content: z.string(),
+  category: z.enum(["DAILY", "DEV"]),
 });
 
 export const getPostParams = z.object({

@@ -12,12 +12,13 @@ import superjson from "superjson";
 import React from "react";
 import { trpc } from "@/utils/trpc";
 import Layout from "@/components/common/Layout";
-import { Box, Heading, Image, Stack, Text } from "@chakra-ui/react";
+import { Heading, Image, Stack, Text } from "@chakra-ui/react";
 import dynamic from "next/dynamic";
 import { PrismaClient } from "@prisma/client";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import Button from "@/components/molecules/Button";
+import Padder from "@/components/common/Padder";
 
 const MarkdownPreview = dynamic(() => import("@uiw/react-markdown-preview"), {
   ssr: false,
@@ -30,7 +31,7 @@ export default function PostDetail({ id }: Props) {
 
   return (
     <Layout>
-      <Box className="pt-16 pb-16 pl-36 pr-36 mobile:pt-4 mobile:pb-4 mobile:pl-4 mobile:pr-4">
+      <Padder>
         <Stack spacing="10">
           <Stack>
             <Heading>{data?.title}</Heading>
@@ -48,7 +49,7 @@ export default function PostDetail({ id }: Props) {
               <Image
                 src={data.thumbnail}
                 width={1280}
-                height={720}
+                objectFit="cover"
                 alt={data.title}
               />
             </Stack>
@@ -64,7 +65,7 @@ export default function PostDetail({ id }: Props) {
             )}
           </Stack>
         </Stack>
-      </Box>
+      </Padder>
     </Layout>
   );
 }
