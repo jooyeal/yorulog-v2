@@ -19,6 +19,7 @@ import { trpc } from "@/utils/trpc";
 import { TPost } from "@/server/schemes/postScheme";
 import { useRouter } from "next/router";
 import axios from "axios";
+import { useState } from "react";
 
 const MDEditor = dynamic(() => import("@uiw/react-md-editor"), { ssr: false });
 const MarkdownPreview = dynamic(() => import("@uiw/react-markdown-preview"), {
@@ -28,6 +29,7 @@ const MarkdownPreview = dynamic(() => import("@uiw/react-markdown-preview"), {
 const PostCreate = () => {
   const router = useRouter();
   const toast = useToast();
+  const [files, setFiles] = useState<FileList | null>();
   const { mutate } = trpc.post.create.useMutation({
     onSuccess: () => {
       toast({
@@ -46,11 +48,11 @@ const PostCreate = () => {
   const { watch, setValue, handleSubmit, register } = useForm<TPost>();
 
   const onSubmit: SubmitHandler<TPost> = async (data) => {
-    const { title, subTitle, thumbnail, content, category } = data;
+    const { title, subTitle, content, category } = data;
     let url = "/no-image.png";
-    if (thumbnail) {
+    if (files) {
       const formData = new FormData();
-      formData.append("file", thumbnail[0]);
+      formData.append("file", files[0]);
       formData.append(
         "upload_preset",
         process.env.NEXT_PUBLIC_CLOUDINARY_PRESET || ""
@@ -103,7 +105,11 @@ const PostCreate = () => {
           <FormLabel className="border-l pl-2 border-teal-500">
             Thumbnail
           </FormLabel>
-          <input {...register("thumbnail")} type="file" accept="image/*" />
+          <input
+            onChange={(e) => setFiles(e.target.files)}
+            type="file"
+            accept="image/*"
+          />
         </Box>
         <Box>
           <FormLabel className="border-l pl-2 border-teal-500">

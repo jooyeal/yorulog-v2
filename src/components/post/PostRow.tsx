@@ -11,6 +11,7 @@ export default function PostRow({ id, title, subTitle, thumbnail }: Post) {
           <Image
             src={thumbnail || "/no-image.png"}
             width={160}
+            height={160}
             objectFit="cover"
             borderRadius="md"
           />
