@@ -12,7 +12,7 @@ const CATEGORY_NAME = "DAILY";
 
 export default function CategoryDaily() {
   const router = useRouter();
-  const { data } = trpc.post.getPostsByCategory.useQuery({
+  const { data, isLoading } = trpc.post.getPostsByCategory.useQuery({
     category: CATEGORY_NAME,
     currentPage: router.query.page ? Number(router.query.page) : 1,
     takeNum: 5,
@@ -21,6 +21,7 @@ export default function CategoryDaily() {
     <CategoryLayout
       title="My Daily Stories"
       posts={data?.posts}
+      isLoading={isLoading}
       prevTo={
         data?.prevPage
           ? () =>
