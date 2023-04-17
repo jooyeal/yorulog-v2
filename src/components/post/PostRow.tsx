@@ -15,7 +15,7 @@ export default function PostRow({ id, title, subTitle, thumbnail }: Post) {
             objectFit="cover"
             borderRadius="md"
           />
-          <Stack p="2">
+          <Stack p="2" overflow="hidden">
             <Text noOfLines={1} fontWeight="bold" fontSize="xl">
               {title}
             </Text>
