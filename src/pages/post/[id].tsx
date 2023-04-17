@@ -12,7 +12,7 @@ import superjson from "superjson";
 import React, { useState } from "react";
 import { trpc } from "@/utils/trpc";
 import Layout from "@/components/common/Layout";
-import { Box, Heading, Image, Stack, Text } from "@chakra-ui/react";
+import { Box, Heading, Image, Skeleton, Stack, Text } from "@chakra-ui/react";
 import dynamic from "next/dynamic";
 import { PrismaClient } from "@prisma/client";
 import { useSession } from "next-auth/react";
@@ -30,11 +30,12 @@ type Props = InferGetServerSidePropsType<typeof getStaticProps>;
 export default function PostDetail({ id }: Props) {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const { data } = trpc.post.getDetail.useQuery({ id });
-  const { data: relatedPostsInfo } = trpc.post.getPostsByCategory.useQuery({
-    category: data?.category || "DEV",
-    currentPage,
-    takeNum: 5,
-  });
+  const { data: relatedPostsInfo, isLoading } =
+    trpc.post.getPostsByCategory.useQuery({
+      category: data?.category || "DEV",
+      currentPage,
+      takeNum: 5,
+    });
   const { data: session } = useSession();
   return (
     <Layout>
@@ -80,18 +81,22 @@ export default function PostDetail({ id }: Props) {
             </Box>
           </Stack>
           <Stack>
-            <Paging
-              prevTo={
-                relatedPostsInfo?.prevPage
-                  ? () => setCurrentPage((prev) => prev - 1)
-                  : null
-              }
-              nextTo={
-                relatedPostsInfo?.nextPage
-                  ? () => setCurrentPage((prev) => prev + 1)
-                  : null
-              }
-            />
+            {!isLoading ? (
+              <Paging
+                prevTo={
+                  relatedPostsInfo?.prevPage
+                    ? () => setCurrentPage((prev) => prev - 1)
+                    : null
+                }
+                nextTo={
+                  relatedPostsInfo?.nextPage
+                    ? () => setCurrentPage((prev) => prev + 1)
+                    : null
+                }
+              />
+            ) : (
+              <Skeleton height="xl" />
+            )}
           </Stack>
         </Stack>
       </Padder>
