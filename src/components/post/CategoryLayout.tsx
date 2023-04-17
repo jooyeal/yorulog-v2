@@ -3,14 +3,22 @@ import { Post } from "@prisma/client";
 import React from "react";
 import Layout from "../common/Layout";
 import Padder from "../common/Padder";
+import Paging from "../common/Paging";
 import PostRow from "./PostRow";
 
 type Props = {
   title: string;
   posts?: Post[];
+  prevTo: (() => void) | null;
+  nextTo: (() => void) | null;
 };
 
-export default function CategoryLayout({ title, posts }: Props) {
+export default function CategoryLayout({
+  title,
+  posts,
+  prevTo,
+  nextTo,
+}: Props) {
   return (
     <Layout>
       <Padder>
@@ -23,6 +31,12 @@ export default function CategoryLayout({ title, posts }: Props) {
               posts?.map((post) => <PostRow key={post.id} {...post} />)
             )}
           </Box>
+        </Stack>
+        <Stack>
+          <Paging
+            prevTo={prevTo ? prevTo : null}
+            nextTo={nextTo ? nextTo : null}
+          />
         </Stack>
       </Padder>
     </Layout>

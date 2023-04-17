@@ -9,7 +9,7 @@ import { createProxySSGHelpers } from "@trpc/react-query/ssg";
 import { appRouter } from "@/server/routers/_app";
 import { createContext } from "@/server/context";
 import superjson from "superjson";
-import React from "react";
+import React, { useState } from "react";
 import { trpc } from "@/utils/trpc";
 import Layout from "@/components/common/Layout";
 import { Box, Heading, Image, Stack, Text } from "@chakra-ui/react";
@@ -20,6 +20,7 @@ import Link from "next/link";
 import Button from "@/components/molecules/Button";
 import Padder from "@/components/common/Padder";
 import PostRow from "@/components/post/PostRow";
+import Paging from "@/components/common/Paging";
 
 const MarkdownPreview = dynamic(() => import("@uiw/react-markdown-preview"), {
   ssr: false,
@@ -27,12 +28,14 @@ const MarkdownPreview = dynamic(() => import("@uiw/react-markdown-preview"), {
 type Props = InferGetServerSidePropsType<typeof getStaticProps>;
 
 export default function PostDetail({ id }: Props) {
+  const [currentPage, setCurrentPage] = useState<number>(1);
   const { data } = trpc.post.getDetail.useQuery({ id });
-  const { data: relatedPosts } = trpc.post.getPostsByCategory.useQuery({
+  const { data: relatedPostsInfo } = trpc.post.getPostsByCategory.useQuery({
     category: data?.category || "DEV",
+    currentPage,
+    takeNum: 5,
   });
   const { data: session } = useSession();
-
   return (
     <Layout>
       <Padder>
@@ -71,10 +74,24 @@ export default function PostDetail({ id }: Props) {
           <Stack>
             <Heading mb="10">Related Posts</Heading>
             <Box>
-              {relatedPosts?.map((post) => (
+              {relatedPostsInfo?.posts.map((post) => (
                 <PostRow key={post.id} {...post} />
               ))}
             </Box>
+          </Stack>
+          <Stack>
+            <Paging
+              prevTo={
+                relatedPostsInfo?.prevPage
+                  ? () => setCurrentPage((prev) => prev - 1)
+                  : null
+              }
+              nextTo={
+                relatedPostsInfo?.nextPage
+                  ? () => setCurrentPage((prev) => prev + 1)
+                  : null
+              }
+            />
           </Stack>
         </Stack>
       </Padder>
