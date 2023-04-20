@@ -12,7 +12,15 @@ import superjson from "superjson";
 import React, { useState } from "react";
 import { trpc } from "@/utils/trpc";
 import Layout from "@/components/common/Layout";
-import { Box, Heading, Image, Skeleton, Stack, Text } from "@chakra-ui/react";
+import {
+  Box,
+  Heading,
+  Image,
+  Skeleton,
+  Stack,
+  Text,
+  useToast,
+} from "@chakra-ui/react";
 import dynamic from "next/dynamic";
 import { PrismaClient } from "@prisma/client";
 import { useSession } from "next-auth/react";
@@ -21,6 +29,7 @@ import Button from "@/components/molecules/Button";
 import Padder from "@/components/common/Padder";
 import PostRow from "@/components/post/PostRow";
 import Paging from "@/components/common/Paging";
+import { useRouter } from "next/router";
 
 const MarkdownPreview = dynamic(() => import("@uiw/react-markdown-preview"), {
   ssr: false,
@@ -29,13 +38,31 @@ type Props = InferGetServerSidePropsType<typeof getStaticProps>;
 
 export default function PostDetail({ id }: Props) {
   const [currentPage, setCurrentPage] = useState<number>(1);
+  const toast = useToast();
+  const router = useRouter();
   const { data } = trpc.post.getDetail.useQuery({ id });
   const { data: relatedPostsInfo, isLoading } =
     trpc.post.getPostsByCategory.useQuery({
       category: data?.category || "DEV",
       currentPage,
       takeNum: 5,
+      selfPost: data?.id,
     });
+  const { mutate } = trpc.post.deletePost.useMutation({
+    onSuccess: () => {
+      toast({
+        title: "success delete",
+        status: "success",
+      });
+      router.push("/");
+    },
+    onError: (error) => {
+      toast({
+        title: error.message,
+        status: "error",
+      });
+    },
+  });
   const { data: session } = useSession();
   return (
     <Layout>
@@ -70,6 +97,11 @@ export default function PostDetail({ id }: Props) {
               <Link href={`/post/edit/${id}`}>
                 <Button>Edit post</Button>
               </Link>
+            )}
+            {session && (
+              <Button onClick={() => mutate({ id: data?.id ?? "" })}>
+                Delete post
+              </Button>
             )}
           </Stack>
           <Stack>

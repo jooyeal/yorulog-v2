@@ -86,9 +86,13 @@ export const postRouter = router({
   }),
   getPostsByCategory: publicProcedure
     .input(
-      postScheme
-        .pick({ category: true })
-        .and(z.object({ currentPage: z.number(), takeNum: z.number() }))
+      postScheme.pick({ category: true }).and(
+        z.object({
+          currentPage: z.number(),
+          takeNum: z.number(),
+          selfPost: z.string().optional(),
+        })
+      )
     )
     .query(async ({ input, ctx }) => {
       try {
@@ -96,15 +100,38 @@ export const postRouter = router({
         const posts = await ctx.prisma.post.findMany({
           where: {
             category: input.category,
+            NOT: {
+              id: input.selfPost,
+            },
           },
           take: takeNum,
           skip: currentPage > 1 ? (currentPage - 1) * takeNum : 0,
+          orderBy: {
+            createdAt: "desc",
+          },
         });
         return {
           posts,
           prevPage: currentPage > 1 ? currentPage - 1 : null,
           nextPage: posts.length < takeNum ? null : currentPage + 1,
         };
+      } catch (e) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "SERVER ERROR IS OCCURED!",
+        });
+      }
+    }),
+  deletePost: authenticatedProcedure
+    .input(z.object({ id: z.string() }))
+    .mutation(async ({ input, ctx }) => {
+      try {
+        const { id } = input;
+        await ctx.prisma.post.delete({
+          where: {
+            id,
+          },
+        });
       } catch (e) {
         throw new TRPCError({
           code: "INTERNAL_SERVER_ERROR",
