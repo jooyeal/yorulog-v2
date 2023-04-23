@@ -33,10 +33,12 @@ import {
 } from "react-icons/si";
 import Layout from "../components/common/Layout";
 import Button from "../components/molecules/Button";
+import { useRouter } from "next/router";
 
 const Home: NextPage = () => {
   const { colorMode } = useColorMode();
   const { data } = trpc.post.getLatest.useQuery();
+  const router = useRouter();
   return (
     <>
       <Head>
@@ -55,7 +57,7 @@ const Home: NextPage = () => {
               my blog. Want to know how I may help your project? please contact
               me.
             </Text>
-            <Button>Contact</Button>
+            <Button onClick={() => router.push("/contact")}>Contact</Button>
           </Stack>
           <Stack>
             <Image src="/profile.jpeg" alt="profile" width={320} height={180} />
