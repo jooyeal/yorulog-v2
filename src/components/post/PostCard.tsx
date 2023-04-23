@@ -20,7 +20,7 @@ type Props = {
 const PostCard = ({ id, thumbnail, title, subTitle }: Props) => {
   return (
     <Link href={`/post/${id}`}>
-      <Card width={320} height={500}>
+      <Card width={320} height={380}>
         <CardHeader>
           <Image
             src={thumbnail || "/no-image.png"}
@@ -32,7 +32,9 @@ const PostCard = ({ id, thumbnail, title, subTitle }: Props) => {
         </CardHeader>
         <CardBody>
           <Heading isTruncated>{title}</Heading>
-          <Text noOfLines={3}>{subTitle}</Text>
+          <Text noOfLines={3} wordBreak="break-all">
+            {subTitle}
+          </Text>
         </CardBody>
         <CardFooter></CardFooter>
       </Card>
