@@ -19,7 +19,7 @@ import { GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
 import { getSession } from "next-auth/react";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
-import React from "react";
+import React, { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import superjson from "superjson";
 import Button from "@/components/molecules/Button";
@@ -33,6 +33,7 @@ const MarkdownPreview = dynamic(() => import("@uiw/react-markdown-preview"), {
 type Props = InferGetServerSidePropsType<typeof getServerSideProps>;
 
 export default function PostEdit({ id }: Props) {
+  const [files, setFiles] = useState<FileList | null>();
   const { data } = trpc.post.getDetail.useQuery({ id });
   const router = useRouter();
   const toast = useToast();
@@ -64,10 +65,10 @@ export default function PostEdit({ id }: Props) {
 
   const onSubmit: SubmitHandler<TPost> = async (data) => {
     const { title, subTitle, thumbnail, content, category } = data;
-    let url: string | null = null;
-    if (thumbnail) {
+    let url: string | null = thumbnail;
+    if (files) {
       const formData = new FormData();
-      formData.append("file", thumbnail[0]);
+      formData.append("file", files[0]);
       formData.append(
         "upload_preset",
         process.env.NEXT_PUBLIC_CLOUDINARY_PRESET || ""
@@ -88,7 +89,7 @@ export default function PostEdit({ id }: Props) {
       id,
       title,
       subTitle,
-      thumbnail: url ? url : thumbnail,
+      thumbnail: url,
       content,
       category,
     });
@@ -121,7 +122,11 @@ export default function PostEdit({ id }: Props) {
           <FormLabel className="border-l pl-2 border-teal-500">
             Thumbnail
           </FormLabel>
-          <input {...register("thumbnail")} type="file" accept="image/*" />
+          <input
+            onChange={(e) => setFiles(e.target.files)}
+            type="file"
+            accept="image/*"
+          />
         </Box>
         <Box>
           <FormLabel className="border-l pl-2 border-teal-500">
