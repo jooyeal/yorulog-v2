@@ -7,6 +7,7 @@ import React from "react";
 import { trpc } from "@/utils/trpc";
 import CategoryLayout from "@/components/post/CategoryLayout";
 import { useRouter } from "next/router";
+import HeadMeta from "@/components/common/HeadMeta";
 
 const CATEGORY_NAME = "DAILY";
 
@@ -18,29 +19,32 @@ export default function CategoryDaily() {
     takeNum: 5,
   });
   return (
-    <CategoryLayout
-      title="My Daily Stories"
-      posts={data?.posts}
-      isLoading={isLoading}
-      prevTo={
-        data?.prevPage
-          ? () =>
-              router.push(
-                `/post/category/dev?page=${Number(router.query.page) - 1}`
-              )
-          : null
-      }
-      nextTo={
-        data?.nextPage
-          ? () =>
-              router.push(
-                `/post/category/dev?page=${
-                  (Number(router.query.page) || 1) + 1
-                }`
-              )
-          : null
-      }
-    />
+    <>
+      <HeadMeta description="My daily life as a korean in tokyo." />
+      <CategoryLayout
+        title="My Daily Stories"
+        posts={data?.posts}
+        isLoading={isLoading}
+        prevTo={
+          data?.prevPage
+            ? () =>
+                router.push(
+                  `/post/category/dev?page=${Number(router.query.page) - 1}`
+                )
+            : null
+        }
+        nextTo={
+          data?.nextPage
+            ? () =>
+                router.push(
+                  `/post/category/dev?page=${
+                    (Number(router.query.page) || 1) + 1
+                  }`
+                )
+            : null
+        }
+      />
+    </>
   );
 }
 

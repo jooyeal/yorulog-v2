@@ -30,6 +30,7 @@ import Padder from "@/components/common/Padder";
 import PostRow from "@/components/post/PostRow";
 import Paging from "@/components/common/Paging";
 import { useRouter } from "next/router";
+import HeadMeta from "@/components/common/HeadMeta";
 
 const MarkdownPreview = dynamic(() => import("@uiw/react-markdown-preview"), {
   ssr: false,
@@ -66,6 +67,12 @@ export default function PostDetail({ id }: Props) {
   const { data: session } = useSession();
   return (
     <Layout>
+      <HeadMeta
+        title={data?.title}
+        description={data?.subTitle || ""}
+        image={data?.thumbnail || ""}
+        url={`https://yorulog-v2.vercel.app/post/${id}`}
+      />
       <Padder>
         <Stack spacing="10">
           <Stack>

@@ -14,6 +14,7 @@ import {
 import React, { FormEvent, useRef } from "react";
 import emailjs from "emailjs-com";
 import { useRouter } from "next/router";
+import HeadMeta from "@/components/common/HeadMeta";
 
 export default function Contact() {
   const formRef = useRef(null);
@@ -50,6 +51,7 @@ export default function Contact() {
   };
   return (
     <Layout>
+      <HeadMeta description="contact to yoru!" />
       <Container>
         <Stack align="center">
           <Heading>Contact to me</Heading>
