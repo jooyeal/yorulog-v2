@@ -53,7 +53,7 @@ const Navigation = () => {
             size="sm"
           />
         </Link>
-        <Link href="#">
+        <Link href="https://github.com/jooyeal">
           <IconButton
             aria-label="github"
             icon={<AiFillGithub size={20} />}
